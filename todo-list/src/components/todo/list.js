@@ -21,8 +21,11 @@ function TodoList(props) {
                     key={item._id}
                 >
                     <span id="listSpan" onClick={() => props.handleComplete(item._id)}>
-                        {item.text}
+                        {/* {item.text} */}
+                        name: {item.assignee} <br />
+                        task: {item.text}
                     </span>
+                    <button onClick={() => props.handleDelete(item._id)}>x</button>
                 </ListGroup.Item>
             ))}
         </ul>

@@ -6,6 +6,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './todo-connected.scss';
 import './todo.scss';
 
+import useAjax from '../hooks/useAjax';
+
 
 const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
 
@@ -14,58 +16,82 @@ const ToDo = () => {
 
   const [list, setList] = useState([]);
 
-  const _addItem = (item) => {
+  const [list, setList] = useState([]);
+  console.log('list', list);
+  const [_getTodoItems, _toggleComplete, _addItem, _deleteItem] = useAjax(setList, list);
+
+  const addItem = (item) => {
     item.due = new Date();
-    fetch(todoAPI, {
-      method: 'post',
-      mode: 'cors',
-      cache: 'no-cache',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(item)
-    })
-      .then(response => response.json())
-      .then(savedItem => {
-        setList([...list, savedItem])
-      })
-      .catch(console.error);
+    _addItem(item);
+  // const _addItem = (item) => {
+  //   item.due = new Date();
+  //   fetch(todoAPI, {
+  //     method: 'post',
+  //     mode: 'cors',
+  //     cache: 'no-cache',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify(item)
+  //   })
+  //     .then(response => response.json())
+  //     .then(savedItem => {
+  //       setList([...list, savedItem])
+  //     })
+  //     .catch(console.error);
   };
 
-  const _toggleComplete = id => {
+  const toggleComplete = id => {
 
-    let item = list.filter(i => i._id === id)[0] || {};
+    let item = list.filter((i) => i._id === id)[0] || {};
 
     if (item._id) {
-
       item.complete = !item.complete;
 
       let url = `${todoAPI}/${id}`;
-
-      fetch(url, {
-        method: 'put',
-        mode: 'cors',
-        cache: 'no-cache',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item)
-      })
-        .then(response => response.json())
-        .then(savedItem => {
-          setList(list.map(listItem => listItem._id === item._id ? savedItem : listItem));
-        })
-        .catch(console.error);
+      _toggleComplete(item, url);
     }
+
+    // let item = list.filter(i => i._id === id)[0] || {};
+
+    // if (item._id) {
+
+    //   item.complete = !item.complete;
+
+    //   let url = `${todoAPI}/${id}`;
+
+    //   fetch(url, {
+    //     method: 'put',
+    //     mode: 'cors',
+    //     cache: 'no-cache',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify(item)
+    //   })
+    //     .then(response => response.json())
+    //     .then(savedItem => {
+    //       setList(list.map(listItem => listItem._id === item._id ? savedItem : listItem));
+    //     })
+    //     .catch(console.error);
+    // }
   };
 
-  const _getTodoItems = () => {
-    fetch(todoAPI, {
-      method: 'get',
-      mode: 'cors',
-    })
-      .then(data => data.json())
-      .then(data => setList(data.results))
-      .catch(console.error);
+  const deleteItems = (id) => {
+    let item = list.filter((i) => i._id === id)[0] || {};
+
+    let url = `${todoAPI}/${id}`;
+    _deleteItem(item, url);
   };
 
-  useEffect(_getTodoItems, []);
+  const getTodoItems = () => {
+    _getTodoItems();
+    // fetch(todoAPI, {
+    //   method: 'get',
+    //   mode: 'cors',
+    // })
+    //   .then(data => data.json())
+    //   .then(data => setList(data.results))
+    //   .catch(console.error);
+  };
+
+  useEffect(getTodoItems, []);
 
   return (
     <>
@@ -78,13 +104,13 @@ const ToDo = () => {
       <section className="todo">
 
         <div>
-          <TodoForm handleSubmit={_addItem} />
+          <TodoForm handleSubmit={addItem} />
         </div>
 
         <div>
           <TodoList
             list={list}
-            handleComplete={_toggleComplete}
+            handleComplete={toggleComplete} handleDelete={deleteItems}
           />
         </div>
       </section>
