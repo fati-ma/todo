@@ -1,63 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-import './todo-connected.scss';
+import axios from 'axios'
+import useAjax from '../hooks/useAjax.js';
 import './todo.scss';
 
-import useAjax from '../hooks/useAjax';
-
-
-const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
+const todoAPI = 'https://todo-fatima.herokuapp.com/api/v1/todo';
 
 
 const ToDo = () => {
 
   const [list, setList] = useState([]);
+  const [getNote, postNote, putNote, deleteNote] = useAjax(list, setList)
 
-  const [list, setList] = useState([]);
-  console.log('list', list);
-  const [_getTodoItems, _toggleComplete, _addItem, _deleteItem] = useAjax(setList, list);
-
-  const addItem = (item) => {
+  const _addItem = (item) => {
     item.due = new Date();
-    _addItem(item);
-  // const _addItem = (item) => {
-  //   item.due = new Date();
-  //   fetch(todoAPI, {
-  //     method: 'post',
-  //     mode: 'cors',
-  //     cache: 'no-cache',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify(item)
-  //   })
-  //     .then(response => response.json())
-  //     .then(savedItem => {
-  //       setList([...list, savedItem])
-  //     })
-  //     .catch(console.error);
+    postNote(todoAPI, item)
+    // axios(todoAPI, {
+    //   method: 'post',
+    //   mode: 'cors',
+    //   cache: 'no-cache',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(item)
+    // })
+    //   .then(response => response.json())
+    //   .then(savedItem => {
+    //     setList([...list, savedItem])
+    //   })
+    //   .catch(console.error);
   };
 
-  const toggleComplete = id => {
+  const _toggleComplete = id => {
 
-    let item = list.filter((i) => i._id === id)[0] || {};
+    let item = list.filter(i => i._id === id)[0] || {};
 
     if (item._id) {
+
       item.complete = !item.complete;
 
       let url = `${todoAPI}/${id}`;
-      _toggleComplete(item, url);
+      putNote(url, item)
     }
-
-    // let item = list.filter(i => i._id === id)[0] || {};
-
-    // if (item._id) {
-
-    //   item.complete = !item.complete;
-
-    //   let url = `${todoAPI}/${id}`;
-
     //   fetch(url, {
     //     method: 'put',
     //     mode: 'cors',
@@ -73,30 +56,36 @@ const ToDo = () => {
     // }
   };
 
-  const deleteItems = (id) => {
-    let item = list.filter((i) => i._id === id)[0] || {};
-
-    let url = `${todoAPI}/${id}`;
-    _deleteItem(item, url);
+  const _getTodoItems = () => {
+    
+    const data = getNote(todoAPI) 
+    console.log('-------->' ,data)
+    setList(data)
   };
+  //   fetch(todoAPI, {
+  //     method: 'get',
+  //     mode: 'cors',
+  //   })
+  //     .then(data => data.json())
+  //     .then(data => setList(data.results))
+  //     .catch(console.error);
+  // };
 
-  const getTodoItems = () => {
-    _getTodoItems();
-    // fetch(todoAPI, {
-    //   method: 'get',
-    //   mode: 'cors',
-    // })
-    //   .then(data => data.json())
-    //   .then(data => setList(data.results))
-    //   .catch(console.error);
-  };
+  useEffect(_getTodoItems, []);
 
-  useEffect(getTodoItems, []);
+  const _deleteItem = id => {
+    let item = list.filter(i => i._id === id)[0] || {};
+
+    if (item._id) {
+      let url = `${todoAPI}/${id}`;
+      deleteNote(url, id);
+    }
+  }
 
   return (
     <>
-      <header id="HED">
-        <h2 id="countH2">
+      <header>
+        <h2>
           There are {list.filter(item => !item.complete).length} Items To Complete
         </h2>
       </header>
@@ -104,13 +93,14 @@ const ToDo = () => {
       <section className="todo">
 
         <div>
-          <TodoForm handleSubmit={addItem} />
+          <TodoForm handleSubmit={_addItem} />
         </div>
 
         <div>
           <TodoList
             list={list}
-            handleComplete={toggleComplete} handleDelete={deleteItems}
+            handleComplete={_toggleComplete}
+            handleDelete={_deleteItem}
           />
         </div>
       </section>

@@ -1,36 +1,51 @@
-import React from 'react';
-import { ListGroup } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
-import './list.scss';
+import React from 'react';
+import { Card, Badge } from 'react-bootstrap';
 
 function TodoList(props) {
+  const setVariation = (complete) => {
+    console.log(complete);
+    return complete ? 'danger' : 'success';
+  };
+  const handleValue = (complete) => {
+    return complete ? 'Complete' : 'Pending';
+  };
+  return (
+    <>
+      {props.list.map((item) => (
+        <Card key={item._id}>
+          <Card.Header as="h5">
+            <Badge
+              className="badge-padding"
+              pill
+              onClick={() => props.handleComplete(item._id)}
+              variant={setVariation(item.complete)}
+            >
+              {handleValue(item.complete)}{' '}
+            </Badge>
+            {item.assignee}
+            <span
+              onClick={() => props.handleDelete(item._id)}
+              className="delete-btn"
+              variant="outline-secondary"
+            >
+              
+            </span>{' '}
+            <button onClick={() => props.handleDelete(item._id)}> X</button>
+          </Card.Header>
+          <Card.Body>
+            <Card.Title>{item.text}</Card.Title>
 
-    return (
-        <ul>
-            {props.list.map(item => (
+            <Card.Text className="right-text">
 
-                // <ListGroup.Item action variant="success" className={`complete-${item.complete.toString()}`}
-                //   key={item._id}><span onClick={() => props.handleComplete(item._id)}>
-                //     {item.text}
-                //   </span></ListGroup.Item>
+              Difficulty: {item.difficulty}
+            </Card.Text>
+          </Card.Body>
+        </Card>
+      ))}
 
-                <ListGroup.Item
-                    variant={(item.complete) ? 'danger' : 'success'}
-                    className={`complete-${item.complete.toString()}`}
-                    key={item._id}
-                >
-                    <span id="listSpan" onClick={() => props.handleComplete(item._id)}>
-                        {/* {item.text} */}
-                        name: {item.assignee} <br />
-                        task: {item.text}
-                    </span>
-                    <button onClick={() => props.handleDelete(item._id)}>x</button>
-                </ListGroup.Item>
-            ))}
-        </ul>
-    );
+    </>
+  );
 }
-
 
 export default TodoList;

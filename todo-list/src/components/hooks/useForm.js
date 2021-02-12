@@ -1,19 +1,21 @@
-import { useState } from 'react';
+import {useState} from 'react';
 
-const useForm = (cb) => {
-  const [item, setItem] = useState({});
+const useForm = (callback) => {
+    const [item, setItem] = useState({});
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        e.target.reset();
 
-  const handleInputChange = (e) => {
-    setItem({ ...item, [e.target.name]: e.target.value });
-    console.log(item);
-  };
+        callback(item);
+    }
+    const handleInputChange = (e) => {
+    
+        setItem({ ...item, [e.target.name]: e.target.value });
+        console.log("Generic Hook Change Handler", item)
+    }
+   
+    return [handleSubmit, handleInputChange, item];
+}
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    e.target.reset();
-    cb(item);
-    setItem({ ...item, [e.target.name]: e.target.value });
-  };
-  return [handleInputChange, handleSubmit];
-};
 export default useForm;

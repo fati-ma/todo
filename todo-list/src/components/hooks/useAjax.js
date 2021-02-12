@@ -1,40 +1,91 @@
 import axios from 'axios';
-const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
+import { useCallback ,useState } from 'react';
 
-export default function useAjax(cb, list) {
-  const _addItem = (item) => {
-    axios({
-      method: 'post',
-      url: todoAPI,
-      data: item,
-    }).then((res) => cb([...list, res.data]));
+const useAjax = () => {
+
+
+  const [response, setResponse] = useState({});
+
+  const setRequestParams = (options) => {
+
+    const method = options.method;
+    
+    let req = { 
+      method: options.method,
+      url: options.url,
+      headers: options.headers
+    };
+
+    if (method === /^post$||^put$/i) req = { ...req, body:  options.body };
+    return req;
   };
 
-  const _toggleComplete = (item, url) => {
-    axios
-      .put(url, item)
-      .then((res) => {
-        console.log('res', res);
-        cb(list.map((listItem) => (listItem._id === item._id ? res.data : listItem)));
-      })
-      .catch(console.error);
+  const useAxios = async (options) => {
+    console.log("useAxios!!")
+    console.log("options >>>> ", options)
+    let results = await axios(
+      options
+    ).catch(function (error) {
+      console.log("error: ");
+      console.log(error)
+    })
+    console.log("results.data -->  ", results.data)
+    setResponse(results.data);
   };
 
-  const _deleteItem = (item, url) => {
-    axios
-      .delete(url)
-      .then((res) => {
-        console.log('res', res);
-        cb(list.filter((listItem) => listItem._id !== item._id));
-      })
-      .catch(console.error);
-  };
+  return [useAxios, response];
 
-  const _getTodoItems = () => {
-    axios
-      .get(todoAPI)
-      .then((data) => cb(data.data.results))
-      .catch(console.error);
-  };
-  return [_getTodoItems, _toggleComplete, _addItem, _deleteItem];
-}
+
+  // const getNote = async (url) => {
+  //   try {
+  //     const response = await axios.get(url);
+  //     return response.data;
+  //   } catch (e) {
+  //     console.error("errrror-->", e)
+  //   }
+  // }
+
+  // const postNote = async (url, item) => {
+  //   try {
+  //     await axios({
+  //       method: 'post',
+  //       url: url,
+  //       mode: 'cors',
+  //       cache: 'no-cache',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       data: item,
+  //     })
+  //   } catch (e) {
+  //     console.error("errrror-->", e);
+  //   }
+  // }
+
+  // const putNote = async (url, data) => {
+  //   try {
+  //     await axios({
+  //       method: 'put',
+  //       url: url,
+  //       data: data,
+  //     });
+  //   } catch (e) {
+  //     console.error("errrror-->", e);
+  //   }
+  // };
+  // const deleteNote = async (url, _id) => {
+  //   try {
+  //     let id = { _id };
+  //     await axios({
+  //       method: 'delete',
+  //       url: url,
+  //       mode: 'cors',
+  //       data: id,
+  //     });
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  // return [getNote, postNote, putNote, deleteNote]
+
+};
+
+export default useAjax;
