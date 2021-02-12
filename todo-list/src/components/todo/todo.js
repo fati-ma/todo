@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
-import Settings from './settings.js';
+// import Settings from './settings.js';
 import './todo.scss';
 import { Container, Row, Col, Alert, Navbar, Nav } from 'react-bootstrap';
 import useAjax from '../hooks/useAjax';
@@ -147,9 +147,9 @@ function ToDo(props) {
           </Row>
         </Container>
       </section>
-      <section>
+      {/* <section>
         <Settings/>
-      </section>
+      </section> */}
     </React.Fragment>
   );
 }

@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ToDo from './components/todo/todo'
 import { Nav, Navbar } from 'react-bootstrap';
 import SettingsProvider from './context/settings';
+import Settings from './components/todo/settings'
 
 export default class App extends React.Component {
   render() {
@@ -14,6 +15,9 @@ export default class App extends React.Component {
   Home   </Navbar.Brand>
         </Navbar>
         <ToDo />
+        <section>
+        <Settings/>
+      </section>
 
         </SettingsProvider>
     );

@@ -14,8 +14,8 @@ function Settings(props) {
       </label>
       <br />
       <label>
-        Date sort
-        <input type='radio' defaultChecked name='sort' onChange={context.toggleDifficulty} />
+        {/* Date sort
+        <input type='radio' defaultChecked name='sort' onChange={context.toggleDifficulty} /> */}
         Difficulty sort
         <input type='radio' name='sort' onChange={context.toggleDifficulty} />
       </label>
