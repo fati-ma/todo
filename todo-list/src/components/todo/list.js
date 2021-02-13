@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
-import { ListGroup, Button, Col, Row, Container } from 'react-bootstrap';
 import { SettingsContext } from '../../context/settings';
 import { Card, Badge } from 'react-bootstrap';
+import Pagination from 'react-bootstrap/Pagination';
 
 function TodoList(props) {
 
@@ -23,7 +23,7 @@ function TodoList(props) {
     });
   }
 
-  if(!context.incomplete){
+  if (!context.incomplete) {
     listNew = listNew.sort((a, b) => {
       if (a.complete > b.complete) {
         return 1;
@@ -38,7 +38,13 @@ function TodoList(props) {
   let numberPages = listNew.length / Number(context.pages);
   let numPages = []
   for (let i = 0; i < numberPages; i++) {
-    numPages.push(<span id='page' key={i} onClick={() => setpageNumber(i)}>{i + 1}</span>)
+    numPages.push(
+      <li id='pId'>
+      <Pagination>
+        <Pagination.Item id='page' key={i} onClick={() => setpageNumber(i)}> {i + 1}</Pagination.Item>
+      </Pagination></li>
+      )
+    // <span id='page' key={i} onClick={() => setpageNumber(i)}>{i + 1}</span>)
   }
 
   let start = pageNumber * Number(context.pages);
@@ -66,7 +72,8 @@ function TodoList(props) {
             >
               {handleValue(item.complete)}{' '}
             </Badge>
-            {item.assignee}
+            <span id='name'> {item.assignee}</span>
+           
             <span
               onClick={() => props.handleDelete(item._id)}
               className="delete-btn"
@@ -74,22 +81,26 @@ function TodoList(props) {
             >
 
             </span>{' '}
-            <button onClick={() => props.handleDelete(item._id)}> X</button>
+            <button id='delete' onClick={() => props.handleDelete(item._id)}> X</button>
           </Card.Header>
           <Card.Body>
             <Card.Title>{item.text}</Card.Title>
 
-            <Card.Text className="right-text">
+            <Card.Text id='diff' className="right-text">
 
               Difficulty: {item.difficulty}
             </Card.Text>
           </Card.Body>
         </Card>
       ))}
+
+
       {numPages.map(item => {
+       
+        <Pagination>{numPages}</Pagination>
+        console.log(item);
         return item;
       })}
-
     </>
   )
 }

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
-import axios from 'axios'
-import useAjax from '../hooks/useAjax.js';
 import './todo.scss';
 
-const todoAPI = 'https://todo-fatima.herokuapp.com/api/v1/todo';
+//https://todo-fatima.herokuapp.com/api/v1/todo
+const todoAPI = 'https://husam278-api-server.herokuapp.com/api/todo';
 
 
 const ToDo = () => {

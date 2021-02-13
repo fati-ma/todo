@@ -9,17 +9,20 @@ export default class App extends React.Component {
   render() {
     return (
       <SettingsProvider>
-        <Navbar bg="primary" variant="dark">
-          <Navbar.Brand href="#home">
-            {' '}
-  Home   </Navbar.Brand>
-        </Navbar>
-        <ToDo />
-        <section>
-        <Settings/>
-      </section>
 
-        </SettingsProvider>
+        <Navbar bg="primary" variant="dark">
+          <Navbar.Brand href="#home">Home
+            {' '}
+          </Navbar.Brand>
+        </Navbar>
+        
+        <ToDo />
+
+        <section>
+          <Settings />
+        </section>
+
+      </SettingsProvider>
     );
   }
 }
