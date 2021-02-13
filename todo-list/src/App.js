@@ -2,12 +2,11 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ToDo from './components/todo/todo'
 import { Nav, Navbar } from 'react-bootstrap';
-import SettingsProvider from './context/settings';
 
 export default class App extends React.Component {
   render() {
     return (
-      <SettingsProvider>
+      <>
         <Navbar bg="primary" variant="dark">
           <Navbar.Brand href="#home">
             {' '}
@@ -15,7 +14,7 @@ export default class App extends React.Component {
         </Navbar>
         <ToDo />
 
-        </SettingsProvider>
+      </>
     );
   }
 }
