@@ -39,10 +39,12 @@ function TodoList(props) {
   let numPages = []
   for (let i = 0; i < numberPages; i++) {
     numPages.push(
-      <li id='pId'>
+      // <li id='pId'>
       <Pagination>
+
         <Pagination.Item id='page' key={i} onClick={() => setpageNumber(i)}> {i + 1}</Pagination.Item>
-      </Pagination></li>
+      </Pagination>
+      // {/* </li> */}
       )
     // <span id='page' key={i} onClick={() => setpageNumber(i)}>{i + 1}</span>)
   }
@@ -62,7 +64,7 @@ function TodoList(props) {
   return (
     <>
       {listNew.map((item) => (
-        <Card key={item._id}>
+        <Card id='card' key={item._id}>
           <Card.Header as="h5">
             <Badge
               className="badge-padding"
@@ -81,7 +83,7 @@ function TodoList(props) {
             >
 
             </span>{' '}
-            <button id='delete' onClick={() => props.handleDelete(item._id)}> X</button>
+            <button id='delete' onClick={() => props.handleDelete(item._id)}> x </button>
           </Card.Header>
           <Card.Body>
             <Card.Title>{item.text}</Card.Title>

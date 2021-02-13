@@ -4,7 +4,7 @@ import { useState } from 'react';
 const todoAPI = 'https://husam278-api-server.herokuapp.com/api/todo';
 
 
-const useForm = (cb) => {
+const useForm = () => {
 
   const [item, setItem] = useState({});
   const [list, setList] = useState([])
@@ -28,11 +28,11 @@ const useForm = (cb) => {
   };
   
   const handleSubmit = (e) => {
-      e.preventDefault();
-      e.target.reset();
-      cb(item);
-      setItem({ ...item, [e.target.name]: e.target.value });
-    };
+    e.preventDefault();
+    e.target.reset();
+    addItem(item);
+    setItem({ item: {} });
+  }
     return [list,setList,handleInputChange,handleSubmit];
 };
 export default useForm;
