@@ -1,33 +1,110 @@
-import React from 'react';
-import { ListGroup } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-import './list.scss';
+import React, { useContext, useState } from 'react';
+import { SettingsContext } from '../../context/settings';
+import { Card, Badge } from 'react-bootstrap';
+import Pagination from 'react-bootstrap/Pagination';
 
 function TodoList(props) {
 
-    return (
-        <ul>
-            {props.list.map(item => (
+  const [pageNumber, setpageNumber] = useState(0);
+  const context = useContext(SettingsContext);
 
-                // <ListGroup.Item action variant="success" className={`complete-${item.complete.toString()}`}
-                //   key={item._id}><span onClick={() => props.handleComplete(item._id)}>
-                //     {item.text}
-                //   </span></ListGroup.Item>
+  console.log(context);
+  let listNew = [...props.list];
 
-                <ListGroup.Item
-                    variant={(item.complete) ? 'danger' : 'success'}
-                    className={`complete-${item.complete.toString()}`}
-                    key={item._id}
-                >
-                    <span id="listSpan" onClick={() => props.handleComplete(item._id)}>
-                        {item.text}
-                    </span>
-                </ListGroup.Item>
-            ))}
-        </ul>
-    );
+  if (context.difficulty) {
+    listNew = listNew.sort((a, b) => {
+      if (a.difficulty < b.difficulty) {
+        return 1;
+      } else if (a.difficulty > b.difficulty) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+  }
+
+  if (!context.incomplete) {
+    listNew = listNew.sort((a, b) => {
+      if (a.complete > b.complete) {
+        return 1;
+      } else if (a.complete < b.complete) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+  }
+
+  let numberPages = listNew.length / Number(context.pages);
+  let numPages = []
+  for (let i = 0; i < numberPages; i++) {
+    numPages.push(
+      // <li id='pId'>
+      <Pagination>
+
+        <Pagination.Item id='page' key={i} onClick={() => setpageNumber(i)}> {i + 1}</Pagination.Item>
+      </Pagination>
+      // {/* </li> */}
+      )
+    // <span id='page' key={i} onClick={() => setpageNumber(i)}>{i + 1}</span>)
+  }
+
+  let start = pageNumber * Number(context.pages);
+  let end = start + Number(context.pages);
+  console.log(pageNumber, start, end)
+  listNew = listNew.slice(start, end)
+
+  const setVariation = (complete) => {
+    console.log(complete);
+    return complete ? 'danger' : 'success';
+  };
+  const handleValue = (complete) => {
+    return complete ? 'Complete' : 'Pending';
+  };
+  return (
+    <>
+      {listNew.map((item) => (
+        <Card id='card' key={item._id}>
+          <Card.Header as="h5">
+            <Badge
+              className="badge-padding"
+              pill
+              onClick={() => props.handleComplete(item._id)}
+              variant={setVariation(item.complete)}
+            >
+              {handleValue(item.complete)}{' '}
+            </Badge>
+            <span id='name'> {item.assignee}</span>
+           
+            <span
+              onClick={() => props.handleDelete(item._id)}
+              className="delete-btn"
+              variant="outline-secondary"
+            >
+
+            </span>{' '}
+            <button id='delete' onClick={() => props.handleDelete(item._id)}> x </button>
+          </Card.Header>
+          <Card.Body>
+            <Card.Title>{item.text}</Card.Title>
+
+            <Card.Text id='diff' className="right-text">
+
+              Difficulty: {item.difficulty}
+            </Card.Text>
+          </Card.Body>
+        </Card>
+      ))}
+
+
+      {numPages.map(item => {
+       
+        <Pagination>{numPages}</Pagination>
+        console.log(item);
+        return item;
+      })}
+    </>
+  )
 }
-
 
 export default TodoList;

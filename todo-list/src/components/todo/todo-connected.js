@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-import './todo-connected.scss';
 import './todo.scss';
 
-
-const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
+//https://todo-fatima.herokuapp.com/api/v1/todo
+const todoAPI = 'https://husam278-api-server.herokuapp.com/api/todo';
 
 
 const ToDo = () => {
@@ -69,8 +66,8 @@ const ToDo = () => {
 
   return (
     <>
-      <header id="HED">
-        <h2 id="countH2">
+      <header>
+        <h2>
           There are {list.filter(item => !item.complete).length} Items To Complete
         </h2>
       </header>

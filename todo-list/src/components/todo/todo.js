@@ -1,77 +1,71 @@
 import React, { useEffect, useState } from 'react';
+import { Container, Row, Col, Alert, Navbar, Nav } from 'react-bootstrap';
 import TodoForm from './form.js';
 import TodoList from './list.js';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import useAjax from '../hooks/useAjax';
+import useForm from '../hooks/useForm';
+import useList from '../hooks/list';
 import './todo.scss';
 
+const todoAPI = 'https://husam278-api-server.herokuapp.com/api/todo';
 
-function ToDo (props) {
-  const [list,setList] = useState([]);
+function ToDo(props) {
 
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     list: [],
-  //   };
-  // }
+  const [list, setList, handleInputChange, handleSubmit] = useForm();
+  const [handler, todoAPI] = useAjax();
+  const [loader, toggleComplete, deleteItem] = useList(handler, todoAPI, setList, list);
 
-  const addItem = (item) => {
-    item._id = Math.random();
-    item.complete = false;
-    setList([...list,item]);
-  };
+  useEffect(() => {
+    loader()
+  }, []);
 
-  const toggleComplete = id => {
+  useEffect(() => {
+    let completeNum = 0;
+    list.forEach(item => {
+      if (item.complete) { completeNum++ }
+    })
+    document.title = `${completeNum}/${list.length} Tasks `;
 
-    let item = list.filter(i => i._id === id)[0] || {};
+  }, [list])
 
-    if (item._id) {
-      item.complete = !item.complete;
-      let newList = list.map(listItem => listItem._id === item._id ? item : listItem);
-      setList(newList);
-    }
-    // document.getElementsByClassName(`complete-${item.complete.toString()}`).setAttribute(" action variant", "danger");
-    // console.log(document.getElementsByClassName(`complete-${item.complete.toString()}`))
 
-  };
 
-  useEffect(()=> {
-    let listArr = [
-      { _id: 1, complete: false, text: 'Clean the Kitchen', difficulty: 3, assignee: 'Person A'},
-      { _id: 2, complete: false, text: 'Do the Laundry', difficulty: 2, assignee: 'Person A'},
-      { _id: 3, complete: false, text: 'Walk the Dog', difficulty: 4, assignee: 'Person B'},
-      { _id: 4, complete: true, text: 'Do Homework', difficulty: 3, assignee: 'Person C'},
-      { _id: 5, complete: false, text: 'Take a Nap', difficulty: 1, assignee: 'Person B'},
-    ];
+  return (
+    <React.Fragment>
 
-    setList(listArr);
-  },[]);
 
-  
-    return (
-      <>
-        <header>
-          <h2>
-          There are {list.filter(item => !item.complete).length} Items To Complete
-          </h2>
-        </header>
-
-        <section className="todo">
-
-          <div>
-            <TodoForm handleSubmit={addItem} />
-          </div>
-
-          <div>
-            <TodoList
-              list={list}
-              handleComplete={toggleComplete}
-            />
-          </div>
-        </section>
-      </>
-    );
-  }
-
+      <section className="todo">
+        <Container>
+          <Row>
+            <Col>
+              <Alert className="black-alert">
+                <h4 id='firstH'>
+                  There are {list.filter((item) => !item.complete).length} Items
+                  To Complete
+                </h4>
+              </Alert>
+            </Col>
+          </Row>
+          <Row>
+            <Col md="4">
+              <div>
+                <TodoForm handleInputChange={handleInputChange} handleSubmit={handleSubmit} />
+              </div>
+            </Col>
+            <Col md="8">
+              <div>
+                <TodoList 
+                  list={list}
+                  handleComplete={toggleComplete}
+                  handleDelete={deleteItem}
+                />
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+    </React.Fragment>
+  );
+}
 
 export default ToDo;
